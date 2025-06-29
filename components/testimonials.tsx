@@ -1,72 +1,103 @@
+"use client"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Star } from "lucide-react"
-
-const testimonials = [
-  {
-    name: "María González",
-    role: "Cliente Regular",
-    content:
-      "El mejor pan de la ciudad. Vengo aquí todas las mañanas por mi café y croissant. El servicio es excepcional y la calidad insuperable.",
-    rating: 5,
-    avatar: "/placeholder.svg?height=60&width=60",
-  },
-  {
-    name: "Carlos Rodríguez",
-    role: "Chef Local",
-    content:
-      "Como chef, aprecio la calidad de los ingredientes y la técnica. My Bakery es mi proveedor de confianza para eventos especiales.",
-    rating: 5,
-    avatar: "/placeholder.svg?height=60&width=60",
-  },
-  {
-    name: "Ana Martínez",
-    role: "Madre de Familia",
-    content:
-      "Mis hijos adoran los muffins y yo el café. Es nuestro lugar favorito para el desayuno de los fines de semana. ¡Altamente recomendado!",
-    rating: 5,
-    avatar: "/placeholder.svg?height=60&width=60",
-  },
-]
+import { useLanguage } from "@/components/language-provider"
+import { useEffect, useState } from "react"
 
 export function Testimonials() {
+  const { t } = useLanguage()
+  const [visibleCards, setVisibleCards] = useState<number[]>([])
+
+  const testimonials = [
+    {
+      name: "María González",
+      role: t("testimonials.maria.role"),
+      content: t("testimonials.maria.content"),
+      rating: 5,
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+    {
+      name: "Carlos Rodríguez",
+      role: t("testimonials.carlos.role"),
+      content: t("testimonials.carlos.content"),
+      rating: 5,
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+    {
+      name: "Ana Martínez",
+      role: t("testimonials.ana.role"),
+      content: t("testimonials.ana.content"),
+      rating: 5,
+      avatar: "/placeholder.svg?height=60&width=60",
+    },
+  ]
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number.parseInt(entry.target.getAttribute("data-index") || "0")
+            setVisibleCards((prev) => [...prev, index])
+          }
+        })
+      },
+      { threshold: 0.1 },
+    )
+
+    const cards = document.querySelectorAll(".testimonial-card")
+    cards.forEach((card) => observer.observe(card))
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section id="testimonios" className="py-20 bg-white">
+    <section id="testimonios" className="py-20 bg-white dark:bg-gray-900">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center space-y-4 mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Lo que Dicen Nuestros Clientes</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            La satisfacción de nuestros clientes es nuestra mayor recompensa. Aquí tienes algunas de sus experiencias
-            con nosotros.
-          </p>
+        <div className="text-center space-y-4 mb-16 animate-fade-in">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("testimonials.title")}</h2>
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">{t("testimonials.description")}</p>
         </div>
 
         {/* Testimonials Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
+            <Card
+              key={index}
+              className={`testimonial-card hover:shadow-lg transition-all duration-500 hover:scale-105 ${
+                visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+              }`}
+              data-index={index}
+              style={{ transitionDelay: `${index * 200}ms` }}
+            >
               <CardContent className="p-6">
                 <div className="space-y-4">
                   {/* Rating */}
                   <div className="flex space-x-1">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />
+                      <Star
+                        key={i}
+                        className={`h-5 w-5 fill-amber-400 text-amber-400 transition-all duration-300 hover:scale-125`}
+                        style={{ animationDelay: `${i * 100}ms` }}
+                      />
                     ))}
                   </div>
 
                   {/* Content */}
-                  <p className="text-gray-600 italic">"{testimonial.content}"</p>
+                  <p className="text-gray-600 dark:text-gray-400 italic">"{testimonial.content}"</p>
 
                   {/* Author */}
-                  <div className="flex items-center space-x-3 pt-4 border-t border-gray-100">
+                  <div className="flex items-center space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                     <img
                       src={testimonial.avatar || "/placeholder.svg"}
                       alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover"
+                      className="w-12 h-12 rounded-full object-cover transition-transform duration-300 hover:scale-110"
                     />
                     <div>
-                      <div className="font-semibold text-gray-900">{testimonial.name}</div>
-                      <div className="text-sm text-gray-500">{testimonial.role}</div>
+                      <div className="font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</div>
+                      <div className="text-sm text-gray-500 dark:text-gray-400">{testimonial.role}</div>
                     </div>
                   </div>
                 </div>

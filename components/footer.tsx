@@ -1,79 +1,75 @@
+"use client"
+
 import { Coffee, Facebook, Instagram, Twitter, Mail } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
 
 export function Footer() {
+  const { t } = useLanguage()
+
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-gray-900 dark:bg-gray-950 text-white border-t border-gray-800">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Coffee className="h-8 w-8 text-amber-400" />
-              <span className="text-2xl font-bold">My Bakery</span>
+            <div className="flex items-center space-x-2 group">
+              <Coffee className="h-8 w-8 text-amber-400 transition-transform duration-300 group-hover:rotate-12" />
+              <span className="text-2xl font-bold text-white">My Bakery</span>
             </div>
-            <p className="text-gray-400">
-              Horneando felicidad desde 2003. Productos frescos, sabores auténticos y momentos especiales.
-            </p>
+            <p className="text-gray-400">{t("footer.description")}</p>
             <div className="flex space-x-4">
-              <Facebook className="h-6 w-6 text-gray-400 hover:text-amber-400 cursor-pointer transition-colors" />
-              <Instagram className="h-6 w-6 text-gray-400 hover:text-amber-400 cursor-pointer transition-colors" />
-              <Twitter className="h-6 w-6 text-gray-400 hover:text-amber-400 cursor-pointer transition-colors" />
-              <Mail className="h-6 w-6 text-gray-400 hover:text-amber-400 cursor-pointer transition-colors" />
+              {[Facebook, Instagram, Twitter, Mail].map((Icon, index) => (
+                <Icon
+                  key={index}
+                  className="h-6 w-6 text-gray-400 hover:text-amber-400 cursor-pointer transition-all duration-300 hover:scale-125 hover:rotate-12"
+                />
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Enlaces Rápidos</h3>
+            <h3 className="text-lg font-semibold text-white">{t("footer.quickLinks")}</h3>
             <ul className="space-y-2">
-              <li>
-                <a href="#inicio" className="text-gray-400 hover:text-amber-400 transition-colors">
-                  Inicio
-                </a>
-              </li>
-              <li>
-                <a href="#productos" className="text-gray-400 hover:text-amber-400 transition-colors">
-                  Productos
-                </a>
-              </li>
-              <li>
-                <a href="#nosotros" className="text-gray-400 hover:text-amber-400 transition-colors">
-                  Nosotros
-                </a>
-              </li>
-              <li>
-                <a href="#contacto" className="text-gray-400 hover:text-amber-400 transition-colors">
-                  Contacto
-                </a>
-              </li>
+              {[
+                { href: "#inicio", key: "nav.home" },
+                { href: "#productos", key: "nav.products" },
+                { href: "#nosotros", key: "nav.about" },
+                { href: "#contacto", key: "nav.contact" },
+              ].map((item, index) => (
+                <li key={index}>
+                  <a
+                    href={item.href}
+                    className="text-gray-400 hover:text-amber-400 transition-all duration-300 hover:translate-x-1 inline-block"
+                  >
+                    {t(item.key)}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Products */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Productos</h3>
+            <h3 className="text-lg font-semibold text-white">{t("footer.products")}</h3>
             <ul className="space-y-2">
-              <li>
-                <span className="text-gray-400">Pan Artesanal</span>
-              </li>
-              <li>
-                <span className="text-gray-400">Pasteles Caseros</span>
-              </li>
-              <li>
-                <span className="text-gray-400">Café Premium</span>
-              </li>
-              <li>
-                <span className="text-gray-400">Croissants</span>
-              </li>
-              <li>
-                <span className="text-gray-400">Muffins</span>
-              </li>
+              {[
+                "products.artisanBread",
+                "products.homemadeCakes",
+                "products.premiumCoffee",
+                "products.croissants",
+                "products.muffins",
+              ].map((key, index) => (
+                <li key={index}>
+                  <span className="text-gray-400">{t(key)}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contacto</h3>
+            <h3 className="text-lg font-semibold text-white">{t("footer.contact")}</h3>
             <div className="space-y-2 text-gray-400">
               <p>
                 Calle Principal 123
@@ -84,16 +80,16 @@ export function Footer() {
               <p>info@mybakery.com</p>
             </div>
             <div className="space-y-1 text-sm text-gray-400">
-              <p>Lun - Vie: 6:00 AM - 8:00 PM</p>
-              <p>Sáb: 7:00 AM - 9:00 PM</p>
-              <p>Dom: 7:00 AM - 6:00 PM</p>
+              <p>{t("contact.hoursWeekdays")}</p>
+              <p>{t("contact.hoursSaturday")}</p>
+              <p>{t("contact.hoursSunday")}</p>
             </div>
           </div>
         </div>
 
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 My Bakery. Todos los derechos reservados.</p>
+          <p>{t("footer.copyright")}</p>
         </div>
       </div>
     </footer>

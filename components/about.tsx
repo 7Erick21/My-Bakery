@@ -1,82 +1,139 @@
+"use client"
+
 import { Card, CardContent } from "@/components/ui/card"
 import { Award, Heart, Users, Clock } from "lucide-react"
-
-const features = [
-  {
-    icon: Heart,
-    title: "Hecho con Amor",
-    description: "Cada producto está elaborado con pasión y dedicación por nuestros maestros panaderos.",
-  },
-  {
-    icon: Award,
-    title: "Calidad Premium",
-    description: "Utilizamos solo los mejores ingredientes locales y técnicas tradicionales de panadería.",
-  },
-  {
-    icon: Users,
-    title: "Tradición Familiar",
-    description: "Somos una empresa familiar con más de 20 años de experiencia en el arte de la panadería.",
-  },
-  {
-    icon: Clock,
-    title: "Fresco Diariamente",
-    description: "Todos nuestros productos se hornean frescos cada día para garantizar la mejor calidad.",
-  },
-]
+import { useLanguage } from "@/components/language-provider"
+import { useEffect, useState } from "react"
 
 export function About() {
+  const { t } = useLanguage()
+  const [isVisible, setIsVisible] = useState(false)
+  const [counters, setCounters] = useState({ years: 0, products: 0, clients: 0, days: 0 })
+
+  const features = [
+    {
+      icon: Heart,
+      title: t("about.madeWithLove"),
+      description: t("about.madeWithLoveDesc"),
+    },
+    {
+      icon: Award,
+      title: t("about.premiumQuality"),
+      description: t("about.premiumQualityDesc"),
+    },
+    {
+      icon: Users,
+      title: t("about.familyTradition"),
+      description: t("about.familyTraditionDesc"),
+    },
+    {
+      icon: Clock,
+      title: t("about.freshDaily"),
+      description: t("about.freshDailyDesc"),
+    },
+  ]
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true)
+            // Animate counters
+            const targets = { years: 20, products: 50, clients: 1000, days: 365 }
+            const duration = 2000
+            const steps = 60
+            const stepTime = duration / steps
+
+            Object.keys(targets).forEach((key) => {
+              const target = targets[key as keyof typeof targets]
+              const increment = target / steps
+              let current = 0
+
+              const timer = setInterval(() => {
+                current += increment
+                if (current >= target) {
+                  current = target
+                  clearInterval(timer)
+                }
+                setCounters((prev) => ({ ...prev, [key]: Math.floor(current) }))
+              }, stepTime)
+            })
+          }
+        })
+      },
+      { threshold: 0.3 },
+    )
+
+    const section = document.getElementById("nosotros")
+    if (section) observer.observe(section)
+
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section id="nosotros" className="py-20 bg-amber-50">
+    <section id="nosotros" className="py-20 bg-amber-50 dark:bg-amber-950/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
-          <div className="space-y-8">
+          <div
+            className={`space-y-8 transition-all duration-1000 ${
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"
+            }`}
+          >
             <div className="space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900">Nuestra Historia</h2>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                My Bakery nació del sueño de compartir el auténtico sabor de la panadería tradicional. Desde 2003, hemos
-                estado sirviendo a nuestra comunidad con productos frescos, elaborados con recetas que han pasado de
-                generación en generación.
-              </p>
-              <p className="text-lg text-gray-600 leading-relaxed">
-                Creemos que la buena comida une a las personas, y cada día trabajamos para crear momentos especiales a
-                través de nuestros panes, pasteles y café excepcional.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-100">{t("about.title")}</h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">{t("about.description1")}</p>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">{t("about.description2")}</p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-600">20+</div>
-                <div className="text-gray-600">Años de experiencia</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-600">50+</div>
-                <div className="text-gray-600">Productos únicos</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-600">1000+</div>
-                <div className="text-gray-600">Clientes felices</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-amber-600">365</div>
-                <div className="text-gray-600">Días al año</div>
-              </div>
+              {[
+                { value: counters.years, label: t("about.yearsExperience"), suffix: "+" },
+                { value: counters.products, label: t("about.uniqueProducts"), suffix: "+" },
+                { value: counters.clients, label: t("about.happyClients"), suffix: "+" },
+                { value: counters.days, label: t("about.daysYear"), suffix: "" },
+              ].map((stat, index) => (
+                <div
+                  key={index}
+                  className={`text-center transition-all duration-500 hover:scale-110 ${
+                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+                  }`}
+                  style={{ transitionDelay: `${index * 200}ms` }}
+                >
+                  <div className="text-3xl font-bold text-amber-600 animate-pulse">
+                    {stat.value}
+                    {stat.suffix}
+                  </div>
+                  <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Features */}
-          <div className="grid gap-6">
+          <div
+            className={`grid gap-6 transition-all duration-1000 delay-300 ${
+              isVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+            }`}
+          >
             {features.map((feature, index) => (
-              <Card key={index} className="border-none shadow-md hover:shadow-lg transition-shadow">
+              <Card
+                key={index}
+                className={`border-none shadow-md hover:shadow-lg transition-all duration-500 hover:scale-105 ${
+                  isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+                }`}
+                style={{ transitionDelay: `${(index + 4) * 200}ms` }}
+              >
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 hover:rotate-12">
                       <feature.icon className="h-6 w-6 text-amber-600" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-lg font-semibold text-gray-900">{feature.title}</h3>
-                      <p className="text-gray-600">{feature.description}</p>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{feature.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400">{feature.description}</p>
                     </div>
                   </div>
                 </CardContent>
