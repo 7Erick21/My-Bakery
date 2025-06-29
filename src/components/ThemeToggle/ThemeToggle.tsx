@@ -1,26 +1,17 @@
 'use client';
-import { useThemeStore } from '@/stores/Theme';
+
 import { Button } from '@/ui/Button';
 import { Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 export const ThemeToggle = () => {
-  const { theme, toggleTheme, mounted } = useThemeStore();
-
-  // Show a placeholder while mounting to prevent hydration mismatch
-  if (!mounted) {
-    return (
-      <Button variant='ghost' size='icon' className='w-9 h-9'>
-        <div className='h-4 w-4' />
-        <span className='sr-only'>Toggle theme</span>
-      </Button>
-    );
-  }
+  const { theme, setTheme } = useTheme();
 
   return (
     <Button
       variant='ghost'
       size='icon'
-      onClick={toggleTheme}
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       className='w-9 h-9 transition-all duration-300 hover:scale-110'
     >
       <Sun

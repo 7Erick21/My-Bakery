@@ -1,32 +1,27 @@
 'use client';
 
-import { useThemeStore } from '@/stores/Theme';
-import type { Theme } from '@/toolbox/interfaces';
-import { FC, PropsWithChildren, useLayoutEffect } from 'react';
+import { ThemeProvider } from '@/components/ThemeProvider';
+import { FC, PropsWithChildren, useEffect, useState } from 'react';
 
 type LayoutProps = PropsWithChildren;
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
-  const { mounted, changeMounted } = useThemeStore();
+  const [mounted, setMounted] = useState<boolean>(false);
 
-  useLayoutEffect(() => {
-    const saved = localStorage.getItem('theme') as Theme;
-    const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'dark';
-    const initial = saved || system;
-
-    document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(initial);
-    useThemeStore.setState({ theme: initial });
-    changeMounted(true);
-  }, [changeMounted]);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return (
       <div className='flex items-center justify-center min-h-screen bg-background text-foreground'>
-        <div className='text-xl font-semibold animate-bounce-gentle'>Cargando My Bakery...</div>
+        {' '}
+        <div className='text-xl font-semibold animate-bounce-gentle'>
+          Cargando My Bakery...
+        </div>{' '}
       </div>
     );
   }
 
-  return <>{children}</>;
+  return <ThemeProvider>{children}</ThemeProvider>;
 };
