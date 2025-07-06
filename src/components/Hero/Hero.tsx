@@ -17,7 +17,7 @@ export const Hero = () => {
   return (
     <section
       id='inicio'
-      className='pt-16 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 min-h-screen flex items-center'
+      className='pt-24 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 min-h-screen flex items-center'
     >
       <div className='container mx-auto px-4 sm:px-6 lg:px-8 py-20'>
         <div className='grid lg:grid-cols-2 gap-12 items-center'>

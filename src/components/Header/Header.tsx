@@ -22,10 +22,10 @@ export function Header() {
 
   return (
     <header
-      className={`fixed top-0 w-full z-50 transition-all duration-500 ease-out ${
+      className={`fixed top-4 left-4 right-4 z-50 transition-all duration-500 ease-out rounded-2xl ${
         isScrolled
-          ? 'bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border-b border-white/20 dark:border-gray-700/20 shadow-2xl shadow-black/5'
-          : 'bg-white/10 dark:bg-gray-900/10 backdrop-blur-lg border-b border-white/10 dark:border-gray-700/10'
+          ? 'bg-white/20 dark:bg-gray-900/20 backdrop-blur-xl border border-white/30 dark:border-gray-700/30 shadow-2xl shadow-black/10'
+          : 'bg-white/10 dark:bg-gray-900/10 backdrop-blur-lg border border-white/20 dark:border-gray-700/20 shadow-xl shadow-black/5'
       }`}
       style={{
         backdropFilter: 'blur(20px) saturate(180%)',
@@ -33,7 +33,7 @@ export function Header() {
       }}
     >
       {/* Efecto de nube flotante */}
-      <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/10 to-white/5 dark:from-gray-900/5 dark:via-gray-900/10 dark:to-gray-900/5 rounded-b-3xl" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/5 via-white/15 to-white/5 dark:from-gray-900/5 dark:via-gray-900/15 dark:to-gray-900/5 rounded-2xl" />
       
       <div className='container mx-auto px-4 sm:px-6 lg:px-8 relative'>
         <div className='flex items-center justify-between h-16'>
